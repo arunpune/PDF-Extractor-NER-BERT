@@ -1,6 +1,6 @@
 from pdf2image import convert_from_path, convert_from_bytes
 import pytesseract
-import PyPDF2
+import config
 from tqdm import tqdm
 import glob
 import timeit
@@ -17,7 +17,8 @@ except ImportError:
 
 def extractor(pather):
     print('0th step')
-    images = convert_from_path(pather)
+    # images = convert_from_path(pather)
+    images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
     print('1st step')
     for i in range(len(images)):
         return pytess(images[i])

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory, current_app as app
 import os
+import config
 import predict
 import joblib
 import transformers
@@ -11,11 +12,9 @@ warnings.filterwarnings("ignore")
 
 app = Flask(__name__)
 
-meta_data = joblib.load(
-    "/Users/iambankaratharva/CanspiritAI/PDF-Extractor-NER-BERT/FLASK/meta.bin")
+meta_data = joblib.load(config.META_MODEL_PATH)
 
-model_bert = tf.keras.models.load_model(
-    '/Users/iambankaratharva/CanspiritAI/PDF-Extractor-NER-BERT/FLASK/my_model.h5', compile=False, custom_objects={'TFBertMainLayer': transformers.TFBertModel})
+model_bert = tf.keras.models.load_model(config.MODEL_PATH, compile=False, custom_objects={'TFBertMainLayer': transformers.TFBertModel})
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
