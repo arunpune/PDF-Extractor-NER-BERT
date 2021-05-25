@@ -1,5 +1,4 @@
 import warnings
-from model import create_model
 import config
 import pandas as pd
 import glob
@@ -193,23 +192,23 @@ def get_mapping(sentence, meta_file, model_bert):
     return final_info
 
 
-if __name__ == "__main__":
-    meta_data = joblib.load("meta.bin")
-    enc_tag = meta_data["enc_tag"]
-    num_tag = len(list(enc_tag.classes_))
-    m1 = create_model(num_tag)
-    m1.load_weights(config.WEIGHT_PATH)
+# if __name__ == "__main__":
+#     meta_data = joblib.load("meta.bin")
+#     enc_tag = meta_data["enc_tag"]
+#     num_tag = len(list(enc_tag.classes_))
+#     m1 = create_model(num_tag)
+#     m1.load_weights(config.WEIGHT_PATH)
 
-    TEXT_FILE_PATH = r'Text/*.txt'
-    var = glob.glob(TEXT_FILE_PATH)
-    var.sort()
-    for i in var:
-        f = open(i, "r")
+#     TEXT_FILE_PATH = r'Text/*.txt'
+#     var = glob.glob(TEXT_FILE_PATH)
+#     var.sort()
+#     for i in var:
+#         f = open(i, "r")
 
-        sentence = f.read()
+#         sentence = f.read()
 
-        get_mapping([sentence])
+#         get_mapping([sentence])
 
-    extracted_df = pd.DataFrame(final_info)
-    print(extracted_df)
-    extracted_df.to_csv(config.EXTRACTED_FILE, header=True, index=False)
+#     extracted_df = pd.DataFrame(final_info)
+#     print(extracted_df)
+#     extracted_df.to_csv(config.EXTRACTED_FILE, header=True, index=False)
