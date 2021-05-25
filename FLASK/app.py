@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory, current_app as app
 import os
+import pandas as pd
+import shutil
 import config
 import predict
 import joblib
@@ -14,49 +16,59 @@ app = Flask(__name__)
 
 meta_data = joblib.load(config.META_MODEL_PATH)
 
-model_bert = tf.keras.models.load_model(config.MODEL_PATH, compile=False, custom_objects={'TFBertMainLayer': transformers.TFBertModel})
+model_bert = tf.keras.models.load_model(config.MODEL_PATH, compile=False, custom_objects={
+                                        'TFBertMainLayer': transformers.TFBertModel})
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# Function for preparing images from pdf
-def prepare_images(pdf_path):
-    # Output dir
-    output_dir = os.path.join(APP_ROOT, 'static/pdf_image/')
 
-    with(Image(filename=pdf_path, resolution=300, width=600)) as source:
-        images = source.sequence
-        pages = len(images)
-        for i in range(pages):
-            Image(images[i]).save(filename=output_dir + str(i) + '.png')
-    print('Prepare Images done')
-
-# App routing
 @app.route('/')
 def main():
     return render_template('index.html')
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
+    global result
     pdf_target = os.path.join(APP_ROOT, 'static/pdf')
+    img_target = os.path.join(APP_ROOT, 'static/pdf-images')
 
-    # Preparing directory
+    # Preparing directory - pdf
     if not os.path.isdir(pdf_target):
         os.mkdir(pdf_target)
+
+    # Preparing directory - image
+    if not os.path.isdir(img_target):
+        os.mkdir(img_target)
 
     # Uploading File
     for file in request.files.getlist('file'):
         filename = file.filename
-        destination = "/".join([pdf_target,filename])
+        destination = "/".join([pdf_target, filename])
         file.save(destination)
-        print(destination)
-        sentence = pdf_to_img.extractor(destination)
+        sentence = pdf_to_img.extractor_pytess(destination)
         final_info = predict.get_mapping([sentence], meta_data, model_bert)
 
-        '''# Creating images
-        if os.path.isfile(destination):
-            prepare_images(destination)'''
+    # Delete file
+    if os.path.isdir(pdf_target):
+        shutil.rmtree(pdf_target)
 
-    return final_info
+    if os.path.isdir(img_target):
+        shutil.rmtree(img_target)
+
+    #final_df = pd.DataFrame.from_dict(final_info,)
+    # final_info.to_html('result.html')
+
+    result = final_info
+    return render_template('result.html', result=final_info)
+
+
+@app.route('/download', methods=['POST'])
+def download():
+    if request.method == 'POST':
+        final_df = pd.DataFrame.from_dict(result)
+        final_df.to_excel('result.xlsx', index=False)
+    return 'Downloaded successfully!'
 
 
 if __name__ == '__main__':

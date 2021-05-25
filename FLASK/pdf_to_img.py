@@ -1,43 +1,51 @@
 from pdf2image import convert_from_path
 import pytesseract
+import os
 import timeit
+from tqdm import tqdm
 import regex as re
 try:
     from PIL import Image
 except ImportError:
     import Image
+import cv2
 
 # EasyOCR
-# import easyocr
-# reader = easyocr.Reader(['en'])
+import easyocr
+reader = easyocr.Reader(['en'])
 
 
-def extractor(pather):
-    print('0th step')
+def extractor_easyOCR(pather):
     images = convert_from_path(pather)
     #images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
-    print('1st step')
+    for i in range(len(images)):
+        images[i].save(
+            f"/Users/iambankaratharva/CanspiritAI/PDF-Extractor-NER-BERT/FLASK/static/pdf-images/page-{i}.png")
+        return(easyOCR(f'/Users/iambankaratharva/CanspiritAI/PDF-Extractor-NER-BERT/FLASK/static/pdf-images/page-{i}.png'))
+
+
+def extractor_pytess(pather):
+    images = convert_from_path(pather)
+    #images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
     for i in range(len(images)):
         return pytess(images[i])
 
 
 def pytess(image):
-    print('pytess')
     extractedInfo = pytesseract.image_to_string((image))
     extractedInfo = " ".join(extractedInfo.split())
     extractedInfo = re.sub(
         '[^A-Za-z0-9#/-]+', ' ', extractedInfo)
-    print(extractedInfo)
     return extractedInfo
 
 
 def easyOCR(image):
     string = ""
+    print(image)
     result = reader.readtext(image, detail=0)
     for texter in result:
         string += texter + " "
-    with open("easyocr.txt", "w") as output:
-        output.write(str(string))
+    return(string)
 
 
 start = timeit.default_timer()
