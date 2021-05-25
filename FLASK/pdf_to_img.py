@@ -1,8 +1,5 @@
-from pdf2image import convert_from_path, convert_from_bytes
+from pdf2image import convert_from_path
 import pytesseract
-import config
-from tqdm import tqdm
-import glob
 import timeit
 import regex as re
 try:
@@ -17,8 +14,8 @@ except ImportError:
 
 def extractor(pather):
     print('0th step')
-    # images = convert_from_path(pather)
-    images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
+    images = convert_from_path(pather)
+    #images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
     print('1st step')
     for i in range(len(images)):
         return pytess(images[i])
@@ -41,8 +38,6 @@ def easyOCR(image):
         string += texter + " "
     with open("easyocr.txt", "w") as output:
         output.write(str(string))
-
-
 
 
 start = timeit.default_timer()
