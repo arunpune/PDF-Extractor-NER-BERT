@@ -7,7 +7,6 @@ import predict
 import joblib
 import transformers
 import tensorflow as tf
-import tensorflow as tf
 import pdf_to_img
 import warnings
 warnings.filterwarnings("ignore")
