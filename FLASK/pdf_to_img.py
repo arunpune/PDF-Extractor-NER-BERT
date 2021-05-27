@@ -14,19 +14,19 @@ except ImportError:
 import cv2
 
 # EasyOCR
-import easyocr
-reader = easyocr.Reader(['en'])
+# import easyocr
+# reader = easyocr.Reader(['en'])
 
 
 def extractor_easyOCR(pather):
     """Converts pdf to image and then saves the image using EASYOCR
 
     :param pather: Absolute path of the pdf, defaults to none
-    
+
     :type pather: path
-    
+
     :return: image: save the converted pdf in image format
-    
+
     :rtype: png image
     """
     images = convert_from_path(pather)
@@ -41,11 +41,11 @@ def extractor_pytess(pather):
     """Converts pdf to image and then saves the image using Pytesseract
 
     :param pather: Absolute path of the pdf, defaults to none
-    
+
     :type pather: path
-    
+
     :return: image: save the converted pdf in image format
-    
+
     :rtype: png image
     """
     images = convert_from_path(pather)
@@ -58,11 +58,11 @@ def pytess(image):
     """Extracts text data from the image using Pytesseract OCR
 
     :param image: Saved image, defaults to none
-    
+
     :type image: png image
-    
+
     :return: extractedInfo: extracted text from the image
-    
+
     :rtype: txt file
     """
     extractedInfo = pytesseract.image_to_string((image))
@@ -76,11 +76,11 @@ def easyOCR(image):
     """Extracts text data from the image using EasyOCR
 
     :param image: Saved image, defaults to none
-    
+
     :type image: png image
-    
+
     :return: string: extracted text from the image
-    
+
     :rtype: txt file
     """
     string = ""
