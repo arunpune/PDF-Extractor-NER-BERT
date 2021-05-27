@@ -1,3 +1,7 @@
+"""
+This is the main file to initialize flask and render html files through flask. It is the master file and calls all other secondary file to perform the extraction function.
+"""
+
 from flask import Flask, render_template, request, send_from_directory, current_app as app
 import os
 import pandas as pd
@@ -23,11 +27,15 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/')
 def main():
+    """Loads the main paage - Index.html
+    """
     return render_template('index.html')
 
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    """Helps upload the pdf to the OCR functions. It ensures that the pdf is passed to image conversion function and then the latter  is passed through the OCR extractor.
+    """
     global result
     pdf_target = os.path.join(APP_ROOT, 'static/pdf')
     img_target = os.path.join(APP_ROOT, 'static/pdf-images')
@@ -64,6 +72,8 @@ def upload():
 
 @app.route('/download', methods=['POST'])
 def download():
+    """Displays the key-values successfully and allows download of the file in excel format. Returns the message 'Downloaded Succesfully' on downloading the file.
+    """
     if request.method == 'POST':
         final_df = pd.DataFrame.from_dict(result)
         final_df.to_excel('result.xlsx', index=False)

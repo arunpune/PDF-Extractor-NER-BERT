@@ -1,3 +1,6 @@
+"""
+This file uses OCR's namely: Pytesseract and EasyOCR to extract the text from the pdf. OCR's cannot extract text directly from PDF's, so it is important for it to be converted to an image format before  passing it through the OCR.
+"""
 from pdf2image import convert_from_path
 import pytesseract
 import os
@@ -16,6 +19,16 @@ reader = easyocr.Reader(['en'])
 
 
 def extractor_easyOCR(pather):
+    """Converts pdf to image and then saves the image using EASYOCR
+
+    :param pather: Absolute path of the pdf, defaults to none
+    
+    :type pather: path
+    
+    :return: image: save the converted pdf in image format
+    
+    :rtype: png image
+    """
     images = convert_from_path(pather)
     #images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
     for i in range(len(images)):
@@ -25,6 +38,16 @@ def extractor_easyOCR(pather):
 
 
 def extractor_pytess(pather):
+    """Converts pdf to image and then saves the image using Pytesseract
+
+    :param pather: Absolute path of the pdf, defaults to none
+    
+    :type pather: path
+    
+    :return: image: save the converted pdf in image format
+    
+    :rtype: png image
+    """
     images = convert_from_path(pather)
     #images = convert_from_path(pather,poppler_path = config.POPPLER_PATH)
     for i in range(len(images)):
@@ -32,6 +55,16 @@ def extractor_pytess(pather):
 
 
 def pytess(image):
+    """Extracts text data from the image using Pytesseract OCR
+
+    :param image: Saved image, defaults to none
+    
+    :type image: png image
+    
+    :return: extractedInfo: extracted text from the image
+    
+    :rtype: txt file
+    """
     extractedInfo = pytesseract.image_to_string((image))
     extractedInfo = " ".join(extractedInfo.split())
     extractedInfo = re.sub(
@@ -40,6 +73,16 @@ def pytess(image):
 
 
 def easyOCR(image):
+    """Extracts text data from the image using EasyOCR
+
+    :param image: Saved image, defaults to none
+    
+    :type image: png image
+    
+    :return: string: extracted text from the image
+    
+    :rtype: txt file
+    """
     string = ""
     print(image)
     result = reader.readtext(image, detail=0)
