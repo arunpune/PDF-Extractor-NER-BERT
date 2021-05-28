@@ -1,5 +1,6 @@
 pandas==1.2.4
 sklearn
+openpyxl
 tensorflow==2.5.0
 transformers
 tokenizers==0.10.3 
